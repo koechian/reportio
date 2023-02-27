@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../components/MyTextField.dart';
 import '../components/MyButton.dart';
+import '../components/Tile.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -18,7 +19,7 @@ class LoginPage extends StatelessWidget {
       backgroundColor: Colors.grey[300],
       body: SafeArea(
         child: Center(
-          child: Column(children: [
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             const SizedBox(height: 50),
             const Icon(
               Icons.lock,
@@ -86,11 +87,33 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(
+              height: 50,
+            ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Tile(imagePath: 'assets/images/google.png'),
+                SizedBox(
+                  width: 50,
+                ),
+                Tile(imagePath: 'assets/images/apple.png'),
+              ],
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'lib/images/google.png',
-                  height: 72,
+                Text('Not a whistleblower?'),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  'Signup now',
+                  style: TextStyle(
+                      color: Colors.blue[700], fontWeight: FontWeight.bold),
                 )
               ],
             )
