@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reportio/pages/Auth.dart';
 import 'pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -17,8 +18,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: LoginPage(),
+    return const MaterialApp(
+      home: AuthPage(),
     );
   }
 }
