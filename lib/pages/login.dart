@@ -1,20 +1,63 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_textfield.dart';
 import '../components/tile.dart';
 import '../components/auth_button.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
 
+// sign in user
   void signInFunc() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text, password: passwordController.text);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+// try catch block to handle auth
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+// stops the spinning loader
+      Navigator.pop(context);
+      // handles wrong email
+      if (e.code == 'user-not-found') {
+        displayAlert('Please check your email and try again');
+      }
+      // handles wrong password
+      else if (e.code == 'wrong-password') {
+        displayAlert('You have entered the wrong password');
+      } else {
+        displayAlert(e.message as String);
+      }
+    }
+  }
+
+  // handle login issues
+  void displayAlert(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(title: Text(message));
+        });
   }
 
   @override
