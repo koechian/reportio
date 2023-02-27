@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "598809354707",
+    "project_id": "reportio-fc523",
+    "storage_bucket": "reportio-fc523.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598809354707:android:d2e5b0923e368944a40f26",
+        "android_client_info": {
+          "package_name": "com.example.reportio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598809354707-86fiprtqbopj09am7g3iis6i3b5k4ju6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCedZTof22o9uBzSI4BxSbhkJsvMQDnA38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598809354707-86fiprtqbopj09am7g3iis6i3b5k4ju6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
