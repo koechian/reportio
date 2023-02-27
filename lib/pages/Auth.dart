@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:reportio/pages/Landing.dart';
 import 'package:reportio/pages/login.dart';
@@ -15,7 +14,7 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           // is the user logged in or not
           if (snapshot.hasData) {
-            return const Landing();
+            return Landing();
           } else {
             return LoginPage();
           }

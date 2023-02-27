@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reportio/pages/Auth.dart';
-import 'pages/login.dart';
+import 'package:reportio/pages/auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 

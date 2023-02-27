@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Landing extends StatelessWidget {
-  const Landing({super.key});
+  Landing({super.key});
+
+  final user = FirebaseAuth.instance.currentUser!;
 
   void logUserOut() {
     FirebaseAuth.instance.signOut();
@@ -12,10 +14,13 @@ class Landing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(actions: [
-        IconButton(onPressed: logUserOut, icon: Icon(Icons.logout))
+        IconButton(
+          onPressed: logUserOut,
+          icon: const Icon(Icons.logout),
+        ),
       ]),
-      body: const Center(
-        child: Text('Logged in'),
+      body: Center(
+        child: Text('Logged in as ${user.email!}'),
       ),
     );
   }

@@ -1,11 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../components/MyTextField.dart';
-import '../components/MyButton.dart';
-import '../components/Tile.dart';
+import '../components/custom_textfield.dart';
+import '../components/tile.dart';
+import '../components/auth_button.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
