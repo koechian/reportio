@@ -2,6 +2,9 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:reportio/services/auth_services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../components/custom_textfield.dart';
 import '../components/tile.dart';
 import '../components/auth_button.dart';
@@ -147,12 +150,18 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Tile(imagePath: 'assets/images/google.png'),
+                      children: [
+                        Tile(
+                          imagePath: 'assets/images/google.png',
+                          onTap: () => AuthServices().signInWithGoogle(),
+                        ),
                         SizedBox(
                           width: 50,
                         ),
-                        Tile(imagePath: 'assets/images/apple.png'),
+                        Tile(
+                          imagePath: 'assets/images/apple.png',
+                          onTap: () => {},
+                        ),
                       ],
                     ),
                     const SizedBox(

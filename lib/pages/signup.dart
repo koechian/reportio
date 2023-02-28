@@ -1,11 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_textfield.dart';
 import '../components/tile.dart';
 import '../components/auth_button.dart';
+import '../services/auth_services.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key, required this.onTap});
@@ -257,12 +257,18 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Tile(imagePath: 'assets/images/google.png'),
+                      children: [
+                        Tile(
+                          imagePath: 'assets/images/google.png',
+                          onTap: () => AuthServices().signInWithGoogle(),
+                        ),
                         SizedBox(
                           width: 50,
                         ),
-                        Tile(imagePath: 'assets/images/apple.png'),
+                        Tile(
+                          imagePath: 'assets/images/apple.png',
+                          onTap: () => {},
+                        ),
                       ],
                     ),
                     const SizedBox(
