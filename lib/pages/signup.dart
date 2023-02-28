@@ -16,6 +16,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final locationController = TextEditingController();
@@ -42,12 +43,19 @@ class _SignupPageState extends State<SignupPage> {
           );
         });
 
-// try catch block to handle auth
+// try catch block to handle signup
+    // ignore: use_build_context_synchronously
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
+      // check if the confirm password and actual password is the same
+      if (confirmPasswordController.text == passwordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text);
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+      } else {
+        Navigator.pop(context);
+        displayAlert('Passwords do not match');
+      }
     } on FirebaseAuthException catch (e) {
 // stops the spinning loader
       Navigator.pop(context);
@@ -83,144 +91,143 @@ class _SignupPageState extends State<SignupPage> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const SizedBox(height: 50),
-              const Icon(
-                Icons.lock,
-                size: 100,
-              ),
-              const SizedBox(height: 50),
-              const Text(
-                'Create a new account',
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 25),
-              MyTextField(
-                controller: nameController,
-                hint: 'Name',
-                hide: false,
-              ),
-              const SizedBox(height: 25),
-              MyTextField(
-                controller: emailController,
-                hint: 'Email',
-                hide: false,
-              ),
-              const SizedBox(height: 25),
-              MyTextField(
-                controller: phoneController,
-                hint: 'Phone Number',
-                hide: false,
-              ),
-              const SizedBox(height: 25),
-              DropdownButton(
-                value: selectedLocation,
-                icon: Icon(Icons.arrow_drop_down),
-                items: locations.map((String items) {
-                  return DropdownMenuItem(
-                    value: items,
-                    child: Text(items),
-                  );
-                }).toList(),
-                //change the location to the selected item
-                onChanged: (String? newval) {
-                  setState(() {
-                    selectedLocation = newval!;
-                  });
-                },
-              ),
-              const SizedBox(height: 25),
-              MyTextField(
-                controller: passwordController,
-                hint: 'Password',
-                hide: true,
-              ),
-              const SizedBox(height: 25),
-              MyTextField(
-                controller: passwordController,
-                hint: 'COnfirm Password',
-                hide: true,
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [Text('Forgot Password?')],
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              MyButton(
-                onTap: signUpFunc,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 80),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Colors.grey.shade400,
-                      ),
+                    const SizedBox(height: 50),
+                    const Icon(
+                      Icons.lock,
+                      size: 100,
+                    ),
+                    const SizedBox(height: 50),
+                    const Text(
+                      'Create a new account',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 25),
+                    MyTextField(
+                      controller: nameController,
+                      hint: 'Name',
+                      hide: false,
+                    ),
+                    const SizedBox(height: 25),
+                    MyTextField(
+                      controller: emailController,
+                      hint: 'Email',
+                      hide: false,
+                    ),
+                    const SizedBox(height: 25),
+                    MyTextField(
+                      controller: phoneController,
+                      hint: 'Phone Number',
+                      hide: false,
+                    ),
+                    const SizedBox(height: 25),
+                    DropdownButton(
+                      value: selectedLocation,
+                      icon: Icon(Icons.arrow_drop_down),
+                      items: locations.map((String items) {
+                        return DropdownMenuItem(
+                          value: items,
+                          child: Text(items),
+                        );
+                      }).toList(),
+                      //change the location to the selected item
+                      onChanged: (String? newval) {
+                        setState(() {
+                          selectedLocation = newval!;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 25),
+                    MyTextField(
+                      controller: passwordController,
+                      hint: 'Password',
+                      hide: true,
+                    ),
+                    const SizedBox(height: 25),
+                    MyTextField(
+                      controller: confirmPasswordController,
+                      hint: 'COnfirm Password',
+                      hide: true,
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    MyButton(
+                      onTap: signUpFunc,
+                      text: 'Register',
+                    ),
+                    const SizedBox(
+                      height: 30,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        'Or continue with',
-                        style: TextStyle(color: Colors.grey.shade700),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.5,
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              'Or continue with',
+                              style: TextStyle(color: Colors.grey.shade700),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.5,
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Colors.grey.shade400,
-                      ),
+                    const SizedBox(
+                      height: 50,
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Tile(imagePath: 'assets/images/google.png'),
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Tile(imagePath: 'assets/images/apple.png'),
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Already a member?'),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  GestureDetector(
-                    onTap: widget.onTap,
-                    child: Text(
-                      'Login here',
-                      style: TextStyle(
-                          color: Colors.blue[700], fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Tile(imagePath: 'assets/images/google.png'),
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Tile(imagePath: 'assets/images/apple.png'),
+                      ],
                     ),
-                  )
-                ],
-              )
-            ]),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Already a member?'),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: widget.onTap,
+                          child: Text(
+                            'Login here',
+                            style: TextStyle(
+                                color: Colors.blue[700],
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    )
+                  ]),
+            ),
           ),
         ),
       ),
