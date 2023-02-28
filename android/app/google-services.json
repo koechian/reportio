@@ -29,6 +29,13 @@
             {
               "client_id": "598809354707-86fiprtqbopj09am7g3iis6i3b5k4ju6.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "598809354707-gs27d2ce6g5e9hbkqf0i5l5b76ua2kvr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.reportio"
+              }
             }
           ]
         }
