@@ -38,6 +38,7 @@ class _SignupPageState extends State<SignupPage> {
 // register new user
   void signUpFunc() async {
     var db = FirebaseFirestore.instance;
+    var fb = FirebaseAuth.instance;
     showDialog(
         context: context,
         builder: (context) {
@@ -51,21 +52,27 @@ class _SignupPageState extends State<SignupPage> {
     try {
       // check if the confirm password and actual password is the same
       if (confirmPasswordController.text == passwordController.text) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await fb.createUserWithEmailAndPassword(
             email: emailController.text, password: passwordController.text);
         // ignore: use_build_context_synchronously
 
         try {
           var user = <String, dynamic>{
             'Name': nameController.text,
-            'Email': FirebaseAuth.instance.currentUser?.email,
+            'Email': fb.currentUser?.email,
             'Phone Number': phoneController.text,
             'Location': selectedLocation,
             'deletionMarker': false,
           };
+          var messages = {
+            'Poster Email': fb.currentUser?.email,
+            'isVerified': true,
+            'Content': 'My first Message',
+            'Type': 'tester'
+          };
           db.collection('whistleblowers').add(user).then(
               (DocumentReference doc) =>
-                  print('Document record added with ID: ${doc.id}'));
+                  doc.collection('messages').add(messages));
         } on FirebaseException catch (e) {
           print('Code: ${e.code}/n Message:${e.message}');
         }
