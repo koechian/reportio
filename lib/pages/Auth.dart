@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:reportio/pages/Landing.dart';
-import 'package:reportio/pages/login.dart';
+import 'package:reportio/pages/switcher.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -16,7 +16,7 @@ class AuthPage extends StatelessWidget {
           if (snapshot.hasData) {
             return Landing();
           } else {
-            return const LoginPage();
+            return const Switcher();
           }
         },
       ),
