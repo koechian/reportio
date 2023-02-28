@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_textfield.dart';
 import '../components/tile.dart';
@@ -33,8 +35,9 @@ class _SignupPageState extends State<SignupPage> {
     'Madaraka',
   ];
 
-// sign in user
+// register new user
   void signUpFunc() async {
+    var db = FirebaseFirestore.instance;
     showDialog(
         context: context,
         builder: (context) {
@@ -51,6 +54,21 @@ class _SignupPageState extends State<SignupPage> {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailController.text, password: passwordController.text);
         // ignore: use_build_context_synchronously
+
+        try {
+          var user = <String, dynamic>{
+            'Name': nameController.text,
+            'Email': FirebaseAuth.instance.currentUser?.email,
+            'Phone Number': phoneController.text,
+            'Location': selectedLocation,
+            'deletionMarker': false,
+          };
+          db.collection('whistleblowers').add(user).then(
+              (DocumentReference doc) =>
+                  print('Document record added with ID: ${doc.id}'));
+        } on FirebaseException catch (e) {
+          print('Code: ${e.code}/n Message:${e.message}');
+        }
         Navigator.pop(context);
       } else {
         Navigator.pop(context);
@@ -150,7 +168,7 @@ class _SignupPageState extends State<SignupPage> {
                     const SizedBox(height: 25),
                     MyTextField(
                       controller: confirmPasswordController,
-                      hint: 'COnfirm Password',
+                      hint: 'Confirm Password',
                       hide: true,
                     ),
                     SizedBox(
