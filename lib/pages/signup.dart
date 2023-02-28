@@ -23,22 +23,18 @@ class _SignupPageState extends State<SignupPage> {
   final phoneController = TextEditingController();
   final locationController = TextEditingController();
 
+  var db = FirebaseFirestore.instance;
+  var fb = FirebaseAuth.instance;
+
   // Location Dorpdown Initial Items
   String selectedLocation = 'South C';
+  var setDefaultLocation = true;
 
   // List of locations (will be included in DB)
-  var locations = [
-    'South C',
-    'South B',
-    'Nairobi West',
-    'Langata',
-    'Madaraka',
-  ];
+  var locationsList = [];
 
 // register new user
   void signUpFunc() async {
-    var db = FirebaseFirestore.instance;
-    var fb = FirebaseAuth.instance;
     showDialog(
         context: context,
         builder: (context) {
@@ -66,10 +62,12 @@ class _SignupPageState extends State<SignupPage> {
           };
           var messages = {
             'Poster Email': fb.currentUser?.email,
-            'isVerified': true,
             'Content': 'My first Message',
-            'Type': 'tester'
+            'Type': 'Example Message',
+            'isVerified': false
           };
+
+          // adds the user to the database and creates the 1st message for them, this message is not sent to the SMS service as it should be unverified
           db.collection('whistleblowers').add(user).then(
               (DocumentReference doc) =>
                   doc.collection('messages').add(messages));
@@ -150,22 +148,39 @@ class _SignupPageState extends State<SignupPage> {
                       hide: false,
                     ),
                     const SizedBox(height: 25),
-                    DropdownButton(
-                      value: selectedLocation,
-                      icon: Icon(Icons.arrow_drop_down),
-                      items: locations.map((String items) {
-                        return DropdownMenuItem(
-                          value: items,
-                          child: Text(items),
-                        );
-                      }).toList(),
-                      //change the location to the selected item
-                      onChanged: (String? newval) {
-                        setState(() {
-                          selectedLocation = newval!;
-                        });
-                      },
-                    ),
+                    StreamBuilder<QuerySnapshot>(
+                        stream: db.collection('locations').snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData) return Container();
+                          // Set this value for default,
+                          // setDefault will change if an item was selected
+                          // First item from the List will be displayed
+                          if (setDefaultLocation) {
+                            selectedLocation =
+                                snapshot.data?.docs[0].get('Name');
+                          }
+                          return DropdownButton(
+                            value: selectedLocation,
+                            icon: Icon(Icons.arrow_drop_down),
+                            isExpanded: false,
+                            items: snapshot.data?.docs.map((value) {
+                              return DropdownMenuItem(
+                                value: value.get('Name'),
+                                child: Text('${value.get('Name')}'),
+                              );
+                            }).toList(),
+                            //change the location to the selected item
+                            onChanged: (newval) {
+                              setState(() {
+                                selectedLocation = newval as String;
+                                !setDefaultLocation;
+
+                                debugPrint(selectedLocation);
+                              });
+                            },
+                          );
+                        }),
                     const SizedBox(height: 25),
                     MyTextField(
                       controller: passwordController,
