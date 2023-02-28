@@ -160,25 +160,45 @@ class _SignupPageState extends State<SignupPage> {
                             selectedLocation =
                                 snapshot.data?.docs[0].get('Name');
                           }
-                          return DropdownButton(
-                            value: selectedLocation,
-                            icon: Icon(Icons.arrow_drop_down),
-                            isExpanded: false,
-                            items: snapshot.data?.docs.map((value) {
-                              return DropdownMenuItem(
-                                value: value.get('Name'),
-                                child: Text('${value.get('Name')}'),
-                              );
-                            }).toList(),
-                            //change the location to the selected item
-                            onChanged: (newval) {
-                              setState(() {
-                                selectedLocation = newval as String;
-                                !setDefaultLocation;
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25),
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Select your Location',
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400),
+                                ),
+                                fillColor: Colors.grey[200],
+                                filled: true,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                ),
+                              ),
+                              value: selectedLocation,
+                              icon: Icon(Icons.arrow_drop_down),
+                              isExpanded: false,
+                              items: snapshot.data?.docs.map((value) {
+                                return DropdownMenuItem(
+                                  value: value.get('Name'),
+                                  child: Text('${value.get('Name')}'),
+                                );
+                              }).toList(),
+                              //change the location to the selected item
+                              onChanged: (newval) {
+                                setState(() {
+                                  selectedLocation = newval as String;
+                                  !setDefaultLocation;
 
-                                debugPrint(selectedLocation);
-                              });
-                            },
+                                  debugPrint(selectedLocation);
+                                });
+                              },
+                            ),
                           );
                         }),
                     const SizedBox(height: 25),
