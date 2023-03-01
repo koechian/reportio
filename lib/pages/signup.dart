@@ -1,7 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../components/custom_textfield.dart';
 import '../components/tile.dart';
@@ -44,14 +43,11 @@ class _SignupPageState extends State<SignupPage> {
         });
 
 // try catch block to handle signup
-    // ignore: use_build_context_synchronously
     try {
       // check if the confirm password and actual password is the same
       if (confirmPasswordController.text == passwordController.text) {
         await fb.createUserWithEmailAndPassword(
             email: emailController.text, password: passwordController.text);
-        // ignore: use_build_context_synchronously
-
         try {
           var user = <String, dynamic>{
             'Name': nameController.text,
