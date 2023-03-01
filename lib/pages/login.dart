@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../components/custom_textfield.dart';
 import '../components/tile.dart';
 import '../components/auth_button.dart';
+import '../pages/password_reset.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.onTap});
@@ -103,7 +104,21 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [Text('Forgot Password?')],
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return PasswordResetPage();
+                                  },
+                                ),
+                              );
+                            },
+                            child: Text('Forgot Password?'),
+                          )
+                        ],
                       ),
                     ),
                     SizedBox(
