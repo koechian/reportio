@@ -1,12 +1,8 @@
-import 'dart:ui';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:developer' as developer;
-
-import 'package:reportio/components/message_container.dart';
+import 'package:reportio/utils/read_data.dart';
 
 class Landing extends StatefulWidget {
   const Landing({super.key});
@@ -16,56 +12,53 @@ class Landing extends StatefulWidget {
 }
 
 class _LandingState extends State<Landing> {
+  // VARIABLES
   final user = FirebaseAuth.instance.currentUser!;
+  final db = FirebaseFirestore.instance;
+  int _selectedIndex = 0;
+  List<String> ids = [];
 
+// METHODS
+
+// Logout
   void logUserOut() {
     FirebaseAuth.instance.signOut();
   }
 
-  int _selectedIndex = 0;
+  Future getMessages() async {
+    ids.clear();
+    await db
+        .collection('messages')
+        .where('Poster Email', isEqualTo: user.email)
+        .orderBy('Date Posted', descending: true)
+        .get()
+        .then(
+          (value) => value.docs.forEach((element) {
+            ids.add(element.reference.id);
+          }),
+        );
+  }
+
+// Change index for bottom navbar navigation
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white);
-  static final List<Widget> _widgetOptions = <Widget>[
+
+  late final List<Widget> _widgetOptions = <Widget>[
     Expanded(
       child: ListView(
-        children: const <Widget>[
-          MessageContainer(),
-          SizedBox(
-            height: 3,
+        children: <Widget>[
+          FutureBuilder(
+            future: getMessages(),
+            builder: (context, snapshot) {
+              return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: ids.length,
+                  itemBuilder: (context, index) {
+                    return GetMessages(docid: ids[index]);
+                  });
+            },
           ),
-          MessageContainer(),
-          SizedBox(
-            height: 3,
-          ),
-          MessageContainer(),
-          SizedBox(
-            height: 3,
-          ),
-          MessageContainer(),
-          SizedBox(
-            height: 3,
-          ),
-          MessageContainer(),
-          SizedBox(
-            height: 3,
-          ),
-          MessageContainer(),
-          SizedBox(
-            height: 3,
-          ),
-          MessageContainer(),
-          SizedBox(
-            height: 3,
-          ),
-          MessageContainer(),
-          SizedBox(
-            height: 3,
-          ),
-          MessageContainer(),
-          SizedBox(
-            height: 3,
-          ),
-          MessageContainer(),
         ],
       ),
     ),
@@ -78,13 +71,13 @@ class _LandingState extends State<Landing> {
       style: optionStyle,
     ),
   ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+// MAIN BUILD METHOD
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,9 +95,7 @@ class _LandingState extends State<Landing> {
         centerTitle: true,
         backgroundColor: Colors.black,
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {},
         elevation: 3,
