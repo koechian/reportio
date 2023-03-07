@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:reportio/components/message_container.dart';
 
 class GetMessages extends StatelessWidget {
@@ -29,7 +28,7 @@ class GetMessages extends StatelessWidget {
         }
         return Container(
           width: 30,
-          child: CircularProgressIndicator.adaptive(),
+          child: const CircularProgressIndicator.adaptive(),
         );
       }),
     );
