@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class MessageContainer extends StatelessWidget {
-  MessageContainer(
+  const MessageContainer(
       {super.key,
       required this.messageContent,
       required this.date,
@@ -14,8 +14,6 @@ class MessageContainer extends StatelessWidget {
   final String messageContent;
   final bool isVerified;
   final DateTime date;
-
-  String status = 'Unverified';
 
   Widget statusBool() {
     if (isVerified) {
@@ -29,9 +27,44 @@ class MessageContainer extends StatelessWidget {
       return Text(
         'Unverified',
         style: GoogleFonts.rubik(
-          color: (const Color.fromRGBO(243, 120, 104, 1)),
+          color: (const Color.fromRGBO(196, 69, 54, 1)),
         ),
       );
+    }
+  }
+
+  Widget dot() {
+    switch (messageType) {
+      case 'Traffic Update':
+        return const Icon(
+          Icons.circle,
+          color: Color.fromRGBO(58, 110, 165, 1),
+        );
+      case 'Security Update':
+        return const Icon(
+          Icons.circle,
+          color: Color.fromRGBO(255, 121, 0, 1),
+        );
+      case 'News Update':
+        return const Icon(
+          Icons.circle,
+          color: Color.fromRGBO(255, 214, 175, 1),
+        );
+      default:
+        return const Icon(Icons.circle, color: Colors.white);
+    }
+  }
+
+  String appendIcon() {
+    switch (messageType) {
+      case 'Traffic Update':
+        return 'Traffic Update  🚦';
+      case 'Security Update':
+        return 'Security Update 👮';
+      case 'News Update':
+        return 'News Update  📰';
+      default:
+        return messageType;
     }
   }
 
@@ -54,14 +87,11 @@ class MessageContainer extends StatelessWidget {
           child: Row(
             children: [
               Column(
-                children: const [
+                children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 6),
-                    child: Icon(
-                      Icons.circle,
-                      color: Color.fromRGBO(62, 141, 54, 1),
-                    ),
-                  ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 6),
+                      child: dot()),
                 ],
               ),
               const SizedBox(
@@ -73,7 +103,7 @@ class MessageContainer extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          messageType,
+                          appendIcon(),
                           style: GoogleFonts.rubik(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
