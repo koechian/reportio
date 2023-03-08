@@ -9,12 +9,14 @@ class MessageContainer extends StatelessWidget {
       required this.messageContent,
       required this.date,
       required this.messageType,
-      required this.isVerified});
+      required this.isVerified,
+      required this.location});
 
   final String messageType;
   final String messageContent;
   final bool isVerified;
   final DateTime date;
+  final String location;
 
   Widget statusBool() {
     if (isVerified) {
@@ -31,28 +33,6 @@ class MessageContainer extends StatelessWidget {
           color: (const Color.fromRGBO(196, 69, 54, 1)),
         ),
       );
-    }
-  }
-
-  Widget dot() {
-    switch (messageType) {
-      case 'Traffic Update':
-        return const Icon(
-          Icons.circle,
-          color: Color.fromRGBO(58, 110, 165, 1),
-        );
-      case 'Security Update':
-        return const Icon(
-          Icons.circle,
-          color: Color.fromRGBO(255, 121, 0, 1),
-        );
-      case 'News Update':
-        return const Icon(
-          Icons.circle,
-          color: Color.fromRGBO(255, 214, 175, 1),
-        );
-      default:
-        return const Icon(Icons.circle, color: Colors.white);
     }
   }
 
@@ -101,6 +81,43 @@ class MessageContainer extends StatelessWidget {
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                               fontSize: 19),
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 17),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          const Icon(
+                                            Icons.location_on,
+                                            size: 14,
+                                            color:
+                                                Color.fromRGBO(67, 67, 67, 1),
+                                          ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                          Text(
+                                            location,
+                                            style: GoogleFonts.rubik(
+                                                color: const Color.fromRGBO(
+                                                    160, 160, 160, 1),
+                                                fontSize: 12),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),

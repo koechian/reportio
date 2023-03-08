@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reportio/components/auth_button.dart';
 import 'package:reportio/components/custom_textfield.dart';
@@ -48,7 +47,7 @@ class _NewMessageState extends State<NewMessage> {
           'Message Content': contentController.text,
           'Message Type': typeController.text,
           'Date Posted': Timestamp.now(),
-          'Refrenced Location': locationController.text,
+          'Referenced Location': locationController.text,
           'isVerified': false
         };
 
