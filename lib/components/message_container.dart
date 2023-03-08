@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'dart:math' as math;
 
 class MessageContainer extends StatelessWidget {
   const MessageContainer(
@@ -55,19 +56,6 @@ class MessageContainer extends StatelessWidget {
     }
   }
 
-  String appendIcon() {
-    switch (messageType) {
-      case 'Traffic Update':
-        return 'Traffic Update  🚦';
-      case 'Security Update':
-        return 'Security Update 👮';
-      case 'News Update':
-        return 'News Update  📰';
-      default:
-        return messageType;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -91,7 +79,12 @@ class MessageContainer extends StatelessWidget {
                   Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 20, horizontal: 6),
-                      child: dot()),
+                      child: Icon(
+                        Icons.circle,
+                        color: Color(
+                                (math.Random().nextDouble() * 0xFFFFFF).toInt())
+                            .withOpacity(0.3),
+                      )),
                 ],
               ),
               const SizedBox(
@@ -103,7 +96,7 @@ class MessageContainer extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          appendIcon(),
+                          messageType,
                           style: GoogleFonts.rubik(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,

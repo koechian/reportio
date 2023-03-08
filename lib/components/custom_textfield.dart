@@ -17,6 +17,7 @@ class MyTextField extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: TextField(
+          style: GoogleFonts.rubik(color: Colors.white, fontSize: 18),
           controller: controller,
           obscureText: hide,
           decoration: InputDecoration(
