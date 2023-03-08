@@ -24,6 +24,12 @@ class _LandingState extends State<Landing> {
       .orderBy('Date Posted', descending: true)
       .snapshots();
 
+  late final Stream<QuerySnapshot> _verificationStream = FirebaseFirestore
+      .instance
+      .collection('messages')
+      .where('Poster Email', isNotEqualTo: user.email)
+      .snapshots();
+
   int _selectedIndex = 0;
   List<String> ids = [];
 
@@ -35,8 +41,6 @@ class _LandingState extends State<Landing> {
   }
 
 // Change index for bottom navbar navigation
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white);
 
   late final List<Widget> _widgetOptions = <Widget>[
     StreamBuilder<QuerySnapshot>(
@@ -57,6 +61,7 @@ class _LandingState extends State<Landing> {
                           document.data() as Map<String, dynamic>;
                       return MessageContainer(
                           messageContent: data['Message Content'],
+                          location: data['Referenced Location'].toString(),
                           date: DateTime.fromMicrosecondsSinceEpoch(
                               data['Date Posted'].microsecondsSinceEpoch),
                           messageType: data['Message Type'],
@@ -68,10 +73,36 @@ class _LandingState extends State<Landing> {
             return const CircularProgressIndicator();
           }
         }),
-    const Text(
-      'Index 1: Community Posts',
-      style: optionStyle,
-    ),
+    StreamBuilder<QuerySnapshot>(
+        stream: _verificationStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          debugPrint(snapshot.hasData.toString());
+          if (snapshot.hasError) {
+            return const Text('something went wrong');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator.adaptive();
+          }
+          if (snapshot.hasData) {
+            return ListView(
+                children: snapshot.data!.docs
+                    .map((DocumentSnapshot document) {
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+                      return MessageContainer(
+                          location: data['Referenced Location'].toString(),
+                          messageContent: data['Message Content'],
+                          date: DateTime.fromMicrosecondsSinceEpoch(
+                              data['Date Posted'].microsecondsSinceEpoch),
+                          messageType: data['Message Type'],
+                          isVerified: data['isVerified']);
+                    })
+                    .toList()
+                    .cast());
+          } else {
+            return const CircularProgressIndicator();
+          }
+        }),
     Column(
       children: [
         const SizedBox(
