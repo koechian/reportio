@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reportio/components/auth_button.dart';
+import 'package:reportio/components/message_container.dart';
 import 'package:reportio/components/new_message.dart';
-import 'package:reportio/utils/read_data.dart';
 
 class Landing extends StatefulWidget {
   const Landing({super.key});
@@ -17,6 +17,13 @@ class _LandingState extends State<Landing> {
   // VARIABLES
   final user = FirebaseAuth.instance.currentUser!;
   final db = FirebaseFirestore.instance;
+
+  late final Stream<QuerySnapshot> _messageStream = FirebaseFirestore.instance
+      .collection('messages')
+      .where('Poster Email', isEqualTo: user.email)
+      .orderBy('Date Posted', descending: true)
+      .snapshots();
+
   int _selectedIndex = 0;
   List<String> ids = [];
 
@@ -27,43 +34,40 @@ class _LandingState extends State<Landing> {
     FirebaseAuth.instance.signOut();
   }
 
-  Future getMessages() async {
-    ids.clear();
-    await db
-        .collection('messages')
-        .where('Poster Email', isEqualTo: user.email)
-        .orderBy('Date Posted', descending: true)
-        .get()
-        .then(
-          (value) => value.docs.forEach((element) {
-            ids.add(element.reference.id);
-          }),
-        );
-  }
-
 // Change index for bottom navbar navigation
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white);
 
   late final List<Widget> _widgetOptions = <Widget>[
-    Expanded(
-      child: ListView(
-        children: <Widget>[
-          FutureBuilder(
-            future: getMessages(),
-            builder: (context, snapshot) {
-              return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: ids.length,
-                  itemBuilder: (context, index) {
-                    return GetMessages(docid: ids[index]);
-                  });
-            },
-          ),
-        ],
-      ),
-    ),
+    StreamBuilder<QuerySnapshot>(
+        stream: _messageStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          debugPrint(snapshot.hasData.toString());
+          if (snapshot.hasError) {
+            return const Text('something went wrong');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator.adaptive();
+          }
+          if (snapshot.hasData) {
+            return ListView(
+                children: snapshot.data!.docs
+                    .map((DocumentSnapshot document) {
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+                      return MessageContainer(
+                          messageContent: data['Message Content'],
+                          date: DateTime.fromMicrosecondsSinceEpoch(
+                              data['Date Posted'].microsecondsSinceEpoch),
+                          messageType: data['Message Type'],
+                          isVerified: data['isVerified']);
+                    })
+                    .toList()
+                    .cast());
+          } else {
+            return const CircularProgressIndicator();
+          }
+        }),
     const Text(
       'Index 1: Community Posts',
       style: optionStyle,
