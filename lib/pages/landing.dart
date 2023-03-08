@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reportio/components/auth_button.dart';
 import 'package:reportio/components/message_container.dart';
@@ -84,6 +85,14 @@ class _LandingState extends State<Landing> {
             return const CircularProgressIndicator.adaptive();
           }
           if (snapshot.hasData) {
+            Fluttertoast.showToast(
+                msg: 'Tap on the message to Verifiy it',
+                toastLength: Toast.LENGTH_LONG,
+                timeInSecForIosWeb: 3,
+                backgroundColor: const Color.fromARGB(255, 30, 30, 30),
+                textColor: const Color.fromRGBO(167, 221, 128, 1),
+                fontSize: 16,
+                gravity: ToastGravity.CENTER);
             return ListView(
                 children: snapshot.data!.docs
                     .map((DocumentSnapshot document) {
