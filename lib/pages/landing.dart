@@ -121,13 +121,16 @@ class _LandingState extends State<Landing> {
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showModalBottomSheet(
+          isScrollControlled: true,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
           backgroundColor: Colors.black,
           context: context,
           builder: (context) {
-            return const NewMessage();
+            return Wrap(
+              children: const [NewMessage()],
+            );
           },
         ),
         elevation: 3,
