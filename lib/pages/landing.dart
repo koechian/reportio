@@ -36,6 +36,18 @@ class _LandingState extends State<Landing> {
 
 // METHODS
 
+  markVerified(docid) async {
+    final docsRef = db.collection('messages').doc(docid);
+
+    db.runTransaction((transaction) async {
+      final snapshot = await transaction.get(docsRef);
+
+      final newverificationStatus = !snapshot.get('isVerified');
+
+      transaction.update(docsRef, {'isVerified': newverificationStatus});
+    }).then((value) => debugPrint('Success'), onError: (e) => debugPrint(e));
+  }
+
 // Logout
   void logUserOut() {
     FirebaseAuth.instance.signOut();
@@ -98,13 +110,30 @@ class _LandingState extends State<Landing> {
                     .map((DocumentSnapshot document) {
                       Map<String, dynamic> data =
                           document.data() as Map<String, dynamic>;
-                      return MessageContainer(
-                          location: data['Referenced Location'].toString(),
-                          messageContent: data['Message Content'],
-                          date: DateTime.fromMicrosecondsSinceEpoch(
-                              data['Date Posted'].microsecondsSinceEpoch),
-                          messageType: data['Message Type'],
-                          isVerified: data['isVerified']);
+                      return GestureDetector(
+                        onTap: () {
+                          final docsRef =
+                              db.collection('messages').doc(document.id);
+
+                          db.runTransaction((transaction) async {
+                            final snapshot = await transaction.get(docsRef);
+
+                            final newverificationStatus =
+                                !snapshot.get('isVerified');
+
+                            transaction.update(
+                                docsRef, {'isVerified': newverificationStatus});
+                          }).then((value) => debugPrint('Success'),
+                              onError: (e) => debugPrint(e));
+                        },
+                        child: MessageContainer(
+                            location: data['Referenced Location'].toString(),
+                            messageContent: data['Message Content'],
+                            date: DateTime.fromMicrosecondsSinceEpoch(
+                                data['Date Posted'].microsecondsSinceEpoch),
+                            messageType: data['Message Type'],
+                            isVerified: data['isVerified']),
+                      );
                     })
                     .toList()
                     .cast());
