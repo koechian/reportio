@@ -21,73 +21,90 @@ class _SignupPageState extends State<SignupPage> {
   final confirmPasswordController = TextEditingController();
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
+  final locationController = TextEditingController();
 
   var db = FirebaseFirestore.instance;
   var fb = FirebaseAuth.instance;
 
-  // Location Dorpdown Initial Items
-  String selectedLocation = 'South C';
-  var setDefaultLocation = true;
+  bool validation = false;
 
   // List of locations (will be included in DB)
   var locationsList = [];
 
 // register new user
   void signUpFunc() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
+    // checking that all fields have data
+    setState(
+      () {
+        emailController.text.isEmpty |
+                nameController.text.isEmpty |
+                confirmPasswordController.text.isEmpty |
+                confirmPasswordController.text.isEmpty |
+                phoneController.text.isEmpty
+            ? validation = false
+            : validation = true;
+      },
+    );
+
+    if (validation) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          });
 
 // try catch block to handle signup
-    try {
-      // check if the confirm password and actual password is the same
-      if (confirmPasswordController.text == passwordController.text) {
-        await fb.createUserWithEmailAndPassword(
-            email: emailController.text, password: passwordController.text);
-        try {
-          var user = <String, dynamic>{
-            'Name': nameController.text,
-            'Email': fb.currentUser?.email,
-            'Phone Number': phoneController.text,
-            'Location': selectedLocation,
-            'deletionMarker': false,
-          };
-          var messages = {
-            'Poster Email': fb.currentUser?.email,
-            'Content': 'My first Message',
-            'Type': 'Example Message',
-            'isVerified': false
-          };
+      try {
+        // check if the confirm password and actual password is the same
+        if (confirmPasswordController.text == passwordController.text) {
+          await fb.createUserWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text);
+          try {
+            var user = <String, dynamic>{
+              'Name': nameController.text,
+              'Email': fb.currentUser?.email,
+              'Phone Number': phoneController.text,
+              'Location': locationController.text,
+              'deletionMarker': false,
+            };
+            var messages = {
+              'Poster Email': fb.currentUser?.email,
+              'Content': 'My first Message',
+              'Type': 'Example Message',
+              'isVerified': false
+            };
 
-          // adds the user to the database and creates the 1st message for them, this message is not sent to the SMS service as it should be unverified
-          db.collection('whistleblowers').add(user).then(
-              (DocumentReference doc) =>
-                  doc.collection('messages').add(messages));
-        } on FirebaseException catch (e) {
-          debugPrint('Code: ${e.code}/n Message:${e.message}');
+            // adds the user to the database and creates the 1st message for them, this message is not sent to the SMS service as it should be unverified
+            db.collection('whistleblowers').add(user).then(
+                (DocumentReference doc) =>
+                    doc.collection('messages').add(messages));
+          } on FirebaseException catch (e) {
+            debugPrint('Code: ${e.code}/n Message:${e.message}');
+          }
+          Navigator.pop(context);
+        } else {
+          Navigator.pop(context);
+          displayAlert('Passwords do not match');
         }
-        Navigator.pop(context);
-      } else {
-        Navigator.pop(context);
-        displayAlert('Passwords do not match');
-      }
-    } on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException catch (e) {
 // stops the spinning loader
-      Navigator.pop(context);
-      // handles wrong email
-      if (e.code == 'user-not-found') {
-        displayAlert('Please check your email and try again');
+        Navigator.pop(context);
+        // handles wrong email
+        if (e.code == 'user-not-found') {
+          displayAlert('Please check your email and try again');
+        }
+        // handles wrong password
+        else if (e.code == 'wrong-password') {
+          displayAlert('You have entered the wrong password');
+        } else {
+          displayAlert(e.message as String);
+        }
       }
-      // handles wrong password
-      else if (e.code == 'wrong-password') {
-        displayAlert('You have entered the wrong password');
-      } else {
-        displayAlert(e.message as String);
-      }
+    } else {
+      // Navigator.pop(context);
+      displayAlert('Make sure all fields are filled!');
     }
   }
 
@@ -97,8 +114,11 @@ class _SignupPageState extends State<SignupPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(message),
-            backgroundColor: Colors.red,
+            title: Text(
+              message,
+              style: GoogleFonts.rubik(),
+            ),
+            backgroundColor: Color.fromARGB(189, 244, 67, 54),
           );
         });
   }
@@ -148,56 +168,10 @@ class _SignupPageState extends State<SignupPage> {
                       hide: false,
                     ),
                     const SizedBox(height: 25),
-                    StreamBuilder<QuerySnapshot>(
-                      stream: db.collection('locations').snapshots(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (!snapshot.hasData) return Container();
-                        // Set this value for default,
-                        // setDefault will change if an item was selected
-                        // First item from the List will be displayed
-                        if (setDefaultLocation) {
-                          selectedLocation = snapshot.data?.docs[0].get('Name');
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25),
-                          child: DropdownButtonFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Select your Location',
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade400),
-                              ),
-                              fillColor: Colors.grey[200],
-                              filled: true,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(7),
-                              ),
-                            ),
-                            value: selectedLocation,
-                            icon: Icon(Icons.arrow_drop_down),
-                            isExpanded: false,
-                            items: snapshot.data?.docs.map((value) {
-                              return DropdownMenuItem(
-                                value: value.get('Name'),
-                                child: Text('${value.get('Name')}'),
-                              );
-                            }).toList(),
-                            //change the location to the selected item
-                            onChanged: (newval) {
-                              setState(() {
-                                selectedLocation = newval as String;
-                                !setDefaultLocation;
-                              });
-                            },
-                          ),
-                        );
-                      },
+                    MyTextField(
+                      controller: locationController,
+                      hint: 'Primary Location',
+                      hide: false,
                     ),
                     const SizedBox(height: 25),
                     MyTextField(
