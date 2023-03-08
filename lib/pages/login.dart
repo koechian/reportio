@@ -19,36 +19,52 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool validation = false;
 
 // sign in user
   void signInFunc() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
+    // checking that all fields have data
+    setState(
+      () {
+        emailController.text.isEmpty |
+                passwordController.text.isEmpty |
+                emailController.text.isEmpty
+            ? validation = false
+            : validation = true;
+      },
+    );
+
+    if (validation) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          });
 
 // try catch block to handle auth
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text);
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
 // stops the spinning loader
-      Navigator.pop(context);
-      // handles wrong email
-      if (e.code == 'user-not-found') {
-        displayAlert('Please check your email and try again');
+        Navigator.pop(context);
+        // handles wrong email
+        if (e.code == 'user-not-found') {
+          displayAlert('Please check your email and try again');
+        }
+        // handles wrong password
+        else if (e.code == 'wrong-password') {
+          displayAlert('You have entered the wrong password');
+        } else {
+          displayAlert(e.message as String);
+        }
       }
-      // handles wrong password
-      else if (e.code == 'wrong-password') {
-        displayAlert('You have entered the wrong password');
-      } else {
-        displayAlert(e.message as String);
-      }
+    } else {
+      displayAlert('Make sure all fields are provided');
     }
   }
 
