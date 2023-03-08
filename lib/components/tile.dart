@@ -11,10 +11,11 @@ class Tile extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
           border: Border.all(
+            width: 0.3,
             color: Colors.white,
           ),
-          borderRadius: BorderRadius.circular(16),
-          color: Colors.grey.shade200),
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.black),
       child: Image.asset(
         imagePath,
         height: 42,

@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../components/custom_textfield.dart';
 import '../components/tile.dart';
 import '../components/auth_button.dart';
@@ -66,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.black,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -79,11 +80,15 @@ class _LoginPageState extends State<LoginPage> {
                     const Icon(
                       Icons.lock,
                       size: 100,
+                      color: Colors.grey,
                     ),
-                    const SizedBox(height: 50),
-                    const Text(
+                    const SizedBox(height: 40),
+                    Text(
                       'Welcome to Reportio',
-                      style: TextStyle(fontSize: 18),
+                      style: GoogleFonts.rubik(
+                        fontSize: 20,
+                        color: Color.fromRGBO(167, 221, 128, 1),
+                      ),
                     ),
                     const SizedBox(height: 25),
                     MyTextField(
@@ -116,7 +121,12 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               );
                             },
-                            child: Text('Forgot Password?'),
+                            child: Text(
+                              'Forgot Password?',
+                              style: GoogleFonts.rubik(
+                                  color:
+                                      const Color.fromARGB(255, 175, 175, 175)),
+                            ),
                           )
                         ],
                       ),
@@ -145,7 +155,8 @@ class _LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               'Or continue with',
-                              style: TextStyle(color: Colors.grey.shade700),
+                              style: GoogleFonts.rubik(
+                                  color: Colors.grey.shade700),
                             ),
                           ),
                           Expanded(
@@ -176,7 +187,10 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Not a whistleblower?'),
+                        Text(
+                          'Not a whistleblower?',
+                          style: GoogleFonts.rubik(color: Colors.grey),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -184,9 +198,9 @@ class _LoginPageState extends State<LoginPage> {
                           onTap: widget.onTap,
                           child: Text(
                             'Signup now',
-                            style: TextStyle(
-                                color: Colors.blue[700],
-                                fontWeight: FontWeight.bold),
+                            style: GoogleFonts.rubik(
+                                color: Color.fromRGBO(167, 221, 128, 1),
+                                fontWeight: FontWeight.w600),
                           ),
                         )
                       ],

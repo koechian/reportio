@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../components/custom_textfield.dart';
 import '../components/tile.dart';
 import '../components/auth_button.dart';
@@ -20,7 +21,6 @@ class _SignupPageState extends State<SignupPage> {
   final confirmPasswordController = TextEditingController();
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
-  final locationController = TextEditingController();
 
   var db = FirebaseFirestore.instance;
   var fb = FirebaseAuth.instance;
@@ -68,7 +68,7 @@ class _SignupPageState extends State<SignupPage> {
               (DocumentReference doc) =>
                   doc.collection('messages').add(messages));
         } on FirebaseException catch (e) {
-          print('Code: ${e.code}/n Message:${e.message}');
+          debugPrint('Code: ${e.code}/n Message:${e.message}');
         }
         Navigator.pop(context);
       } else {
@@ -106,7 +106,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.black,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -118,12 +118,16 @@ class _SignupPageState extends State<SignupPage> {
                     const SizedBox(height: 50),
                     const Icon(
                       Icons.lock,
+                      color: Colors.grey,
                       size: 100,
                     ),
                     const SizedBox(height: 50),
-                    const Text(
+                    Text(
                       'Create a new account',
-                      style: TextStyle(fontSize: 18),
+                      style: GoogleFonts.rubik(
+                        fontSize: 20,
+                        color: Color.fromRGBO(167, 221, 128, 1),
+                      ),
                     ),
                     const SizedBox(height: 25),
                     MyTextField(
@@ -145,58 +149,56 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     const SizedBox(height: 25),
                     StreamBuilder<QuerySnapshot>(
-                        stream: db.collection('locations').snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData) return Container();
-                          // Set this value for default,
-                          // setDefault will change if an item was selected
-                          // First item from the List will be displayed
-                          if (setDefaultLocation) {
-                            selectedLocation =
-                                snapshot.data?.docs[0].get('Name');
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25),
-                            child: DropdownButtonFormField(
-                              decoration: InputDecoration(
-                                hintText: 'Select your Location',
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade400),
-                                ),
-                                fillColor: Colors.grey[200],
-                                filled: true,
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(7),
-                                ),
+                      stream: db.collection('locations').snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) return Container();
+                        // Set this value for default,
+                        // setDefault will change if an item was selected
+                        // First item from the List will be displayed
+                        if (setDefaultLocation) {
+                          selectedLocation = snapshot.data?.docs[0].get('Name');
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: DropdownButtonFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Select your Location',
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
                               ),
-                              value: selectedLocation,
-                              icon: Icon(Icons.arrow_drop_down),
-                              isExpanded: false,
-                              items: snapshot.data?.docs.map((value) {
-                                return DropdownMenuItem(
-                                  value: value.get('Name'),
-                                  child: Text('${value.get('Name')}'),
-                                );
-                              }).toList(),
-                              //change the location to the selected item
-                              onChanged: (newval) {
-                                setState(() {
-                                  selectedLocation = newval as String;
-                                  !setDefaultLocation;
-
-                                  debugPrint(selectedLocation);
-                                });
-                              },
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade400),
+                              ),
+                              fillColor: Colors.grey[200],
+                              filled: true,
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(7),
+                              ),
                             ),
-                          );
-                        }),
+                            value: selectedLocation,
+                            icon: Icon(Icons.arrow_drop_down),
+                            isExpanded: false,
+                            items: snapshot.data?.docs.map((value) {
+                              return DropdownMenuItem(
+                                value: value.get('Name'),
+                                child: Text('${value.get('Name')}'),
+                              );
+                            }).toList(),
+                            //change the location to the selected item
+                            onChanged: (newval) {
+                              setState(() {
+                                selectedLocation = newval as String;
+                                !setDefaultLocation;
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 25),
                     MyTextField(
                       controller: passwordController,
@@ -236,7 +238,8 @@ class _SignupPageState extends State<SignupPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               'Or continue with',
-                              style: TextStyle(color: Colors.grey.shade700),
+                              style: GoogleFonts.rubik(
+                                  color: Colors.grey.shade700),
                             ),
                           ),
                           Expanded(
@@ -267,7 +270,10 @@ class _SignupPageState extends State<SignupPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Already a member?'),
+                        Text(
+                          'Already a member?',
+                          style: GoogleFonts.rubik(color: Colors.grey),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -275,9 +281,14 @@ class _SignupPageState extends State<SignupPage> {
                           onTap: widget.onTap,
                           child: Text(
                             'Login here',
-                            style: TextStyle(
-                                color: Colors.blue[700],
-                                fontWeight: FontWeight.bold),
+                            style: GoogleFonts.rubik(
+                                color: Color.fromRGBO(
+                                  167,
+                                  221,
+                                  128,
+                                  1,
+                                ),
+                                fontWeight: FontWeight.w600),
                           ),
                         )
                       ],
