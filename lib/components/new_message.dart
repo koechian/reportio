@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,11 +17,85 @@ class _NewMessageState extends State<NewMessage> {
   final typeController = TextEditingController();
   final locationController = TextEditingController();
   final contentController = TextEditingController();
+  bool validation = false;
+  var db = FirebaseFirestore.instance;
+  var fb = FirebaseAuth.instance;
+
+  void sendBroadcast() {
+    // checking that all fields have data
+    setState(() {
+      locationController.text.isEmpty |
+              contentController.text.isEmpty |
+              typeController.text.isEmpty
+          ? validation = false
+          : validation = true;
+    });
+    if (validation) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          });
+
+// try catch block to handle message addition
+      try {
+        var message = {
+          'Poster Email': fb.currentUser?.email,
+          'Message Content': contentController.text,
+          'Message Type': typeController.text,
+          'Date Posted': Timestamp.now(),
+          'Refrenced Location': locationController.text,
+          'isVerified': false
+        };
+
+        db.collection('messages').add(message);
+        Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+// stops the spinning loader
+        Navigator.pop(context);
+        displayAlert(e.message.toString());
+      }
+      Navigator.pop(context);
+    } else {
+      displayAlert('Please fill all the fields');
+    }
+  }
+
+  // display alerts
+  void displaySuccess(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              message,
+              style: GoogleFonts.rubik(),
+            ),
+            backgroundColor: const Color.fromARGB(188, 62, 62, 62),
+          );
+        });
+  }
+
+  // display alerts
+  void displayAlert(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              message,
+              style: GoogleFonts.rubik(),
+            ),
+            backgroundColor: const Color.fromARGB(189, 244, 67, 54),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     // Location Dorpdown Initial Items
-    var db = FirebaseFirestore.instance;
 
     return Container(
         padding: const EdgeInsets.all(8),
@@ -79,7 +154,7 @@ class _NewMessageState extends State<NewMessage> {
                   height: 30,
                 ),
                 MyButton(
-                  onTap: () {},
+                  onTap: sendBroadcast,
                   text: 'Send Broadcast',
                   color: Colors.black,
                 ),
