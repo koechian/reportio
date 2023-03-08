@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:reportio/components/auth_button.dart';
+import 'package:reportio/components/new_message.dart';
 import 'package:reportio/utils/read_data.dart';
 
 class Landing extends StatefulWidget {
@@ -66,10 +68,31 @@ class _LandingState extends State<Landing> {
       'Index 1: Community Posts',
       style: optionStyle,
     ),
-    const Text(
-      'Index 2: Profile',
-      style: optionStyle,
-    ),
+    Column(
+      children: [
+        const SizedBox(
+          height: 50,
+        ),
+        SizedBox(
+          height: 40,
+          child: Center(
+            child: Text(
+              'Logged in as: ${user.email!}',
+              style: GoogleFonts.rubik(fontSize: 18, color: Colors.grey),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Center(
+          child: MyButton(
+            onTap: logUserOut,
+            text: 'Logout',
+          ),
+        )
+      ],
+    )
   ];
   void _onItemTapped(int index) {
     setState(() {
@@ -81,7 +104,7 @@ class _LandingState extends State<Landing> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
+      // extendBody: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text(
@@ -97,7 +120,16 @@ class _LandingState extends State<Landing> {
       ),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () => showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          backgroundColor: Colors.black,
+          context: context,
+          builder: (context) {
+            return const NewMessage();
+          },
+        ),
         elevation: 3,
         splashColor: Colors.green.shade600,
         label: Text(
