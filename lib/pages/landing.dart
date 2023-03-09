@@ -73,11 +73,11 @@ class _LandingState extends State<Landing> {
                       Map<String, dynamic> data =
                           document.data() as Map<String, dynamic>;
                       return MessageContainer(
-                          messageContent: data['Message Content'],
+                          messageContent: data['Message Content'].toString(),
                           location: data['Referenced Location'].toString(),
                           date: DateTime.fromMicrosecondsSinceEpoch(
                               data['Date Posted'].microsecondsSinceEpoch),
-                          messageType: data['Message Type'],
+                          messageType: data['Message Type'].toString(),
                           isVerified: data['isVerified']);
                     })
                     .toList()
@@ -128,10 +128,10 @@ class _LandingState extends State<Landing> {
                         },
                         child: MessageContainer(
                             location: data['Referenced Location'].toString(),
-                            messageContent: data['Message Content'],
+                            messageContent: data['Message Content'].toString(),
                             date: DateTime.fromMicrosecondsSinceEpoch(
                                 data['Date Posted'].microsecondsSinceEpoch),
-                            messageType: data['Message Type'],
+                            messageType: data['Message Type'].toString(),
                             isVerified: data['isVerified']),
                       );
                     })

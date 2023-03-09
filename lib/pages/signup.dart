@@ -69,17 +69,9 @@ class _SignupPageState extends State<SignupPage> {
               'Location': locationController.text,
               'deletionMarker': false,
             };
-            var message = {
-              'Poster Email': fb.currentUser?.email,
-              'Content': 'My first Message',
-              'Type': 'Example Message',
-              'isVerified': false
-            };
 
             // adds the user to the database and creates the 1st message for them, this message is not sent to the SMS service as it should be unverified
-            db.collection('whistleblowers').add(user).then(
-                (DocumentReference doc) =>
-                    db.collection('messages').add(message));
+            db.collection('whistleblowers').add(user);
           } on FirebaseException catch (e) {
             debugPrint('Code: ${e.code}/n Message:${e.message}');
           }
