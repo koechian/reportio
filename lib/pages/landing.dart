@@ -97,6 +97,7 @@ class _LandingState extends State<Landing> {
             return const CircularProgressIndicator.adaptive();
           }
           if (snapshot.hasData) {
+            debugPrint(snapshot.data!.docs.toString());
             Fluttertoast.showToast(
                 msg: 'Tap on the message to Verifiy it',
                 toastLength: Toast.LENGTH_LONG,
@@ -138,7 +139,10 @@ class _LandingState extends State<Landing> {
                     .toList()
                     .cast());
           } else {
-            return const CircularProgressIndicator();
+            return const Center(
+              child: Text(
+                  'There seems to be no created messages yet! Chech back later'),
+            );
           }
         }),
     Column(
