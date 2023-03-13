@@ -13,14 +13,12 @@ export const pushToPending = functions.firestore
   .onUpdate((change, context) => {
     const message = change.after.data();
 
+    // copies the verified message to the pending document
     db.doc(`pending/+${makeid(8)}`).create(message);
-  });
 
-/**
- * Creates a random id .
- * @param {number} length The first number.
- * @returns {string} The sum of the two numbers.
- */
+    // deletes the verified message from the messages pool
+    db.doc(`messages/${change.before.id}`).delete();
+  });
 
 function makeid(length: number): string {
   let result = "";
