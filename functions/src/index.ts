@@ -9,5 +9,5 @@ export const pushToPending = functions.firestore
   .onUpdate((change, context) => {
     const message = change.after.data();
 
-    console.log(message);
+    functions.logger.log(message);
   });
