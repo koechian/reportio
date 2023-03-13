@@ -13,5 +13,5 @@ export const pushToPending = functions.firestore
   .onUpdate((change, context) => {
     const message = change.after.data();
 
-    db.doc("pending/").set(message);
+    db.doc("pending").create(message);
   });
