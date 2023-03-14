@@ -14,7 +14,7 @@ export const pushToPending = functions.firestore
     const message = change.after.data();
 
     // copies the verified message to the pending document
-    db.doc(`pending/+${makeid(8)}`).create(message);
+    db.doc(`pending/${makeid(20)}`).create(message);
 
     // deletes the verified message from the messages pool
     db.doc(`messages/${change.before.id}`).delete();
@@ -22,7 +22,8 @@ export const pushToPending = functions.firestore
 
 function makeid(length: number): string {
   let result = "";
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
