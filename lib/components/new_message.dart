@@ -48,7 +48,8 @@ class _NewMessageState extends State<NewMessage> {
           'Message Type': typeController.text,
           'Date Posted': Timestamp.now(),
           'Referenced Location': locationController.text,
-          'isVerified': false
+          'isVerified': false,
+          'isSent': false
         };
 
         db.collection('messages').add(message);
