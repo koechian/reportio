@@ -13,7 +13,7 @@ export const pushToPending = functions.firestore
   .onUpdate((change, context) => {
     const message = change.after.data();
 
-    let newmessage = {
+    const newmessage = {
       body: `${message.get("Message  Type")}\n${message.get(
         "Message Content"
       )} \n Location: ${message.get("Referenced Location")}`,
