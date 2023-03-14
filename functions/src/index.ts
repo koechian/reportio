@@ -13,8 +13,15 @@ export const pushToPending = functions.firestore
   .onUpdate((change, context) => {
     const message = change.after.data();
 
+    let newmessage = {
+      body: `${message.get("Message  Type")}\n${message.get(
+        "Message Content"
+      )} \n Location: ${message.get("Referenced Location")}`,
+      to: "+254799038737",
+    };
+
     // copies the verified message to the pending document
-    db.doc(`pending/${makeid(20)}`).create(message);
+    db.doc(`pending/${makeid(20)}`).create(newmessage);
 
     // deletes the verified message from the messages pool
     db.doc(`messages/${change.before.id}`).delete();
