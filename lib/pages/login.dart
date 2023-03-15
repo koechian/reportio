@@ -47,8 +47,8 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: emailController.text, password: passwordController.text);
-        // ignore: use_build_context_synchronously
-        Navigator.pop(context);
+
+        if (context.mounted) Navigator.of(context).pop();
       } on FirebaseAuthException catch (e) {
 // stops the spinning loader
         Navigator.pop(context);
