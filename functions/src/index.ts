@@ -14,9 +14,9 @@ export const pushToPending = functions.firestore
     const message = change.after.data();
 
     const newmessage = {
-      body: `${message.get("Message  Type")}\n${message.get(
-        "Message Content"
-      )} \n Location: ${message.get("Referenced Location")}`,
+      body: `${message["Message Type"]}\n
+      ${message["Message Content"]} \n Location: 
+      ${message["Referenced Location"]}`,
       to: "+254799038737",
     };
 
