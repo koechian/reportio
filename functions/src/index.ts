@@ -23,6 +23,9 @@ export const pushToPending = functions.firestore
     // copies the verified message to the pending document
     db.doc(`pending/${makeid(20)}`).create(newmessage);
 
+    // copies the message to the old messages document
+    db.doc(`old/${makeid(20)}`).create(message);
+
     // deletes the verified message from the messages pool
     db.doc(`messages/${change.before.id}`).delete();
   });
