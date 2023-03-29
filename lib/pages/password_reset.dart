@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:reportio/components/custom_textfield.dart';
 
 class PasswordResetPage extends StatefulWidget {
@@ -27,8 +28,11 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
       showDialog(
           context: context,
           builder: (context) {
-            return const AlertDialog(
-              content: Text('Password reset link has been sent to your email!'),
+            return AlertDialog(
+              content: Text(
+                'Password reset link has been sent to your email!',
+                style: GoogleFonts.rubik(color: Colors.black),
+              ),
             );
           });
     } on FirebaseException catch (e) {
@@ -68,7 +72,11 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
             const SizedBox(
               height: 20,
             ),
-            MyTextField(controller: _email, hint: 'Email', hide: false),
+            MyTextField(
+                controller: _email,
+                textColor: Colors.black,
+                hint: 'Email',
+                hide: false),
             const SizedBox(
               height: 30,
             ),

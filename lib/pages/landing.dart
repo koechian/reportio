@@ -20,7 +20,7 @@ class _LandingState extends State<Landing> {
   final db = FirebaseFirestore.instance;
 
   late final Stream<QuerySnapshot> _messageStream = FirebaseFirestore.instance
-      .collection('messages')
+      .collection('old')
       .where('Poster Email', isEqualTo: user.email)
       .orderBy('Date Posted', descending: true)
       .snapshots();
@@ -59,14 +59,18 @@ class _LandingState extends State<Landing> {
     StreamBuilder<QuerySnapshot>(
         stream: _messageStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          debugPrint(snapshot.hasData.toString());
           if (snapshot.hasError) {
-            return const Text('something went wrong');
+            debugPrint(snapshot.error.toString());
+            return Text(
+              'Something went wrong, check the logs',
+              style: GoogleFonts.rubik(color: Colors.white),
+            );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator.adaptive();
           }
           if (snapshot.hasData) {
+            debugPrint('Mambo ni live');
             return ListView(
                 children: snapshot.data!.docs
                     .map((DocumentSnapshot document) {

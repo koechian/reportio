@@ -7,6 +7,7 @@ class MyTextField extends StatelessWidget {
   final bool hide;
   final Color bordercolor;
   final Color focusedbordercolor;
+  final Color textColor;
   final int maxLines;
 
   const MyTextField(
@@ -16,6 +17,7 @@ class MyTextField extends StatelessWidget {
       required this.hide,
       this.maxLines = 1,
       this.bordercolor = Colors.grey,
+      this.textColor = Colors.white,
       this.focusedbordercolor = const Color.fromRGBO(167, 221, 82, 1)});
 
   @override
@@ -23,7 +25,7 @@ class MyTextField extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: TextField(
-          style: GoogleFonts.rubik(color: Colors.white, fontSize: 18),
+          style: GoogleFonts.rubik(color: textColor, fontSize: 18),
           controller: controller,
           obscureText: hide,
           maxLines: maxLines,
